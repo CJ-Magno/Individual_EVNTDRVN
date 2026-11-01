@@ -1,0 +1,188 @@
+{{> head}}
+<body class="bg-slate-100 page-body">
+  <div class="min-h-screen lg:flex lg:h-screen">
+    {{> aside activeAdmin=true isAdmin=true userName=userName}}
+    <main class="flex-1 overflow-y-auto p-6 lg:p-10">
+      {{> notifications}}
+      <div class="mx-auto max-w-7xl">
+        <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-widest text-dali-600">Administration</p>
+            <h1 class="mt-2 text-4xl font-bold text-slate-900">Product Management</h1>
+            <p class="mt-1 text-slate-500">Add, edit, and monitor all products in the store catalog.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="rounded-2xl border border-slate-200 bg-white px-5 py-3 shadow-sm text-center">
+              <span class="text-xs text-slate-500 block">Total</span>
+              <strong class="text-2xl text-slate-900">{{products.length}}</strong>
+            </div>
+            <button type="button" data-open-add class="rounded-xl px-5 py-3 font-semibold text-white shadow-lg transition hover:opacity-90" style="background:#C4136A;">+ Add Product</button>
+          </div>
+        </div>
+
+        <!-- Product list -->
+        <section class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+          {{#if products.length}}
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[900px] text-left">
+                <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                  <tr>
+                    <th class="px-5 py-4">Product</th>
+                    <th class="px-5 py-4">Category</th>
+                    <th class="px-5 py-4">Price</th>
+                    <th class="px-5 py-4">Stock</th>
+                    <th class="px-5 py-4">Expiration</th>
+                    <th class="px-5 py-4">Status</th>
+                    <th class="px-5 py-4">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  {{#each products}}
+                    <tr class="hover:bg-slate-50 transition">
+                      <td class="px-5 py-4">
+                        <div class="flex items-center gap-3">
+                          {{#if image}}
+                            <img src="{{image}}" alt="{{name}}" class="h-10 w-10 rounded-lg object-cover shrink-0">
+                          {{else}}
+                            <div class="h-10 w-10 rounded-lg bg-dali-100 grid place-items-center text-dali-500 shrink-0 font-bold">D</div>
+                          {{/if}}
+                          <div>
+                            <p class="font-semibold text-sm text-slate-900">{{name}}</p>
+                            <p class="text-xs text-slate-400">{{supplier}}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-5 py-4 text-sm text-slate-600">{{category}}</td>
+                      <td class="px-5 py-4 text-sm font-semibold text-slate-900">₱{{price}}</td>
+                      <td class="px-5 py-4 text-sm text-slate-700">{{stock}}</td>
+                      <td class="px-5 py-4">
+                        <p class="text-sm text-slate-900 font-semibold">{{expirationDate}}</p>
+                        {{#if isExpired}}
+                          <p class="text-xs text-red-500">{{daysLeft}}d ago</p>
+                        {{else}}
+                          <p class="text-xs {{#if isWarning}}text-amber-600{{else}}text-emerald-600{{/if}}">{{daysLeft}}d left</p>
+                        {{/if}}
+                      </td>
+                      <td class="px-5 py-4">
+                        {{#if isRecalled}}
+                          <span class="rounded-full px-3 py-1 text-xs font-bold status-recalled">Recalled</span>
+                        {{else if isExpired}}
+                          <span class="rounded-full px-3 py-1 text-xs font-bold status-expired">Expired</span>
+                        {{else if isWarning}}
+                          <span class="rounded-full px-3 py-1 text-xs font-bold status-warning">Near Expiry</span>
+                        {{else}}
+                          <span class="rounded-full px-3 py-1 text-xs font-bold status-good">Good</span>
+                        {{/if}}
+                      </td>
+                      <td class="px-5 py-4">
+                        <div class="flex gap-2">
+                          <button type="button" data-open-edit="{{id}}" class="rounded-lg bg-dali-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-dali-700">Edit</button>
+                          <form action="/admin/products/{{id}}/delete" method="POST" onsubmit="return confirm('Delete {{name}}?');">
+                            <button class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-100">Delete</button>
+                          </form>
+                        </div>
+                        {{> edit-product-modal}}
+                      </td>
+                    </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+          {{else}}
+            <p class="px-6 py-16 text-center text-slate-400">No products yet. Add one to get started.</p>
+          {{/if}}
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add Product Modal -->
+  <div data-add-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 p-4 opacity-0 transition-opacity duration-200" aria-hidden="true">
+    <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto translate-y-4 rounded-3xl bg-white p-6 shadow-2xl transition-transform duration-200" data-add-panel>
+      <div class="mb-5 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-widest text-dali-600">Catalog Management</p>
+          <h2 class="mt-1 text-xl font-bold text-slate-900">Add a product</h2>
+        </div>
+        <button type="button" data-close-add class="rounded-full w-9 h-9 text-xl text-slate-400 hover:bg-slate-100">&times;</button>
+      </div>
+      <form action="/admin/products" method="POST" enctype="multipart/form-data" class="grid grid-cols-2 gap-4">
+        <label class="col-span-2 text-sm font-semibold text-slate-700">Product Name *
+          <input name="name" required placeholder="e.g. Fresh Milk 1L" class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+        </label>
+        <label class="text-sm font-semibold text-slate-700">Category *
+          <input name="category" required placeholder="e.g. Dairy" class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+        </label>
+        <label class="text-sm font-semibold text-slate-700">Supplier
+          <input name="supplier" placeholder="Supplier name" class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+        </label>
+        <label class="text-sm font-semibold text-slate-700">Price (₱) *
+          <input name="price" type="number" min="0" step="0.01" placeholder="0.00" required class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+        </label>
+        <label class="text-sm font-semibold text-slate-700">Stock
+          <input name="stock" type="number" min="0" placeholder="0" value="0" class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+        </label>
+        <label class="text-sm font-semibold text-slate-700">Barcode
+          <input name="barcode" placeholder="Optional" class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+        </label>
+        <label class="text-sm font-semibold text-slate-700">Quality Status
+          <select name="qualityStatus" class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+            <option value="good">Good</option>
+            <option value="warning">Near Expiry</option>
+            <option value="expired">Expired</option>
+            <option value="recalled">Recalled</option>
+          </select>
+        </label>
+        <label class="text-sm font-semibold text-slate-700">Manufactured Date
+          <input name="manufacturedDate" type="date" class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+        </label>
+        <label class="text-sm font-semibold text-slate-700">Expiration Date *
+          <input name="expirationDate" type="date" required class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+        </label>
+        <label class="col-span-2 text-sm font-semibold text-slate-700">Description
+          <textarea name="description" rows="2" placeholder="Optional product description" class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none"></textarea>
+        </label>
+        <label class="col-span-2 text-sm font-semibold text-slate-700">Product Image
+          <input name="image" type="file" accept="image/jpeg,image/png,image/webp" class="mt-2 block w-full text-sm">
+        </label>
+        <div class="col-span-2 flex gap-3 justify-end mt-2">
+          <button type="button" data-close-add class="rounded-xl border border-slate-200 px-4 py-2.5 font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
+          <button class="rounded-xl px-5 py-2.5 font-semibold text-white hover:opacity-90" style="background:#C4136A;">Add product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("click", e => {
+      const add = e.target.closest("[data-open-add]");
+      const closeAdd = e.target.closest("[data-close-add]");
+      const addBackdrop = e.target.matches("[data-add-modal]");
+      if (add) {
+        const m = document.querySelector("[data-add-modal]");
+        m.classList.remove("hidden"); requestAnimationFrame(() => { m.classList.add("flex","opacity-100"); m.querySelector("[data-add-panel]").classList.remove("translate-y-4"); });
+        return;
+      }
+      if (closeAdd || addBackdrop) {
+        const m = document.querySelector("[data-add-modal]");
+        m.classList.remove("flex","opacity-100"); m.classList.add("hidden");
+        m.querySelector("[data-add-panel]").classList.add("translate-y-4");
+        return;
+      }
+      const open = e.target.closest("[data-open-edit]");
+      const close = e.target.closest("[data-close-edit]");
+      const backdrop = e.target.matches("[data-edit-modal]");
+      const modal = open ? document.getElementById(`edit-modal-${open.dataset.openEdit}`)
+                  : close?.closest("[data-edit-modal]") || (backdrop ? e.target : null);
+      if (!modal) return;
+      if (open) { modal.classList.remove("hidden"); requestAnimationFrame(() => { modal.classList.add("flex","opacity-100"); modal.querySelector("[data-modal-panel]").classList.remove("translate-y-4"); }); }
+      else { modal.classList.remove("flex","opacity-100"); modal.classList.add("hidden"); modal.querySelector("[data-modal-panel]").classList.add("translate-y-4"); }
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key !== "Escape") return;
+      const add = document.querySelector("[data-add-modal].flex");
+      if (add) { add.classList.remove("flex","opacity-100"); add.classList.add("hidden"); }
+      document.querySelectorAll("[data-edit-modal].flex").forEach(m => { m.classList.remove("flex","opacity-100"); m.classList.add("hidden"); });
+    });
+  </script>
+{{> footer}}

@@ -1,0 +1,156 @@
+{{> head}}
+<body class="bg-slate-100 page-body">
+  <div class="min-h-screen lg:flex lg:h-screen">
+    {{> aside activeUsers=true isAdmin=true userName=userName}}
+    <main class="flex-1 overflow-y-auto p-6 lg:p-10">
+      {{> notifications}}
+      <div class="mx-auto max-w-6xl">
+        <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-widest text-dali-600">Administration</p>
+            <h1 class="mt-2 text-4xl font-bold text-slate-900">User Management</h1>
+            <p class="mt-1 text-slate-500">Create and manage staff and administrator accounts.</p>
+          </div>
+          <button type="button" data-open-add-user class="rounded-xl px-5 py-3 font-semibold text-white shadow-lg transition hover:opacity-90" style="background:#C4136A;">+ Add User</button>
+        </div>
+
+        <section class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[700px] text-left">
+              <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                <tr>
+                  <th class="px-6 py-4">User</th>
+                  <th class="px-6 py-4">Email</th>
+                  <th class="px-6 py-4">Role</th>
+                  <th class="px-6 py-4">Joined</th>
+                  <th class="px-6 py-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                {{#each users}}
+                  <tr class="hover:bg-slate-50 transition">
+                    <td class="px-6 py-4">
+                      <div class="flex items-center gap-3">
+                        <div class="h-9 w-9 rounded-full grid place-items-center font-bold text-sm shrink-0" style="background:#FFD6EC;color:#C4136A;">{{name.[0]}}</div>
+                        <div>
+                          <p class="font-semibold text-sm text-slate-900">{{name}}</p>
+                          <p class="text-xs text-slate-400">ID {{id}}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-slate-600">{{email}}</td>
+                    <td class="px-6 py-4">
+                      {{#if (eq role 'admin')}}
+                        <span class="rounded-full px-3 py-1 text-xs font-bold bg-dali-100 text-dali-700">Admin</span>
+                      {{else if (eq role 'staff')}}
+                        <span class="rounded-full px-3 py-1 text-xs font-bold bg-blue-100 text-blue-700">Staff</span>
+                      {{else}}
+                        <span class="rounded-full px-3 py-1 text-xs font-bold bg-slate-100 text-slate-600">Customer</span>
+                      {{/if}}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-slate-500">{{createdAt}}</td>
+                    <td class="px-6 py-4">
+                      <div class="flex gap-2">
+                        <button type="button" data-open-edit-user="{{id}}" class="rounded-lg bg-dali-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-dali-700">Edit</button>
+                        {{#unless (eq id ../currentUserId)}}
+                          <button type="button" data-open-delete-user="{{id}}" data-user-name="{{name}}" class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-100">Delete</button>
+                        {{/unless}}
+                      </div>
+                    </td>
+                  </tr>
+                  {{> edit-user-modal}}
+                {{else}}
+                  <tr><td colspan="5" class="px-6 py-12 text-center text-slate-400">No users found.</td></tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add User Modal -->
+  <div data-add-user-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 p-4 opacity-0 transition-opacity duration-200">
+    <div class="w-full max-w-lg translate-y-4 rounded-3xl bg-white p-6 shadow-2xl transition-transform duration-200" data-add-user-panel>
+      <div class="mb-5 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-widest text-dali-600">Account Management</p>
+          <h2 class="mt-1 text-xl font-bold">Add User</h2>
+        </div>
+        <button type="button" data-close-user-modal class="rounded-full w-9 h-9 text-xl text-slate-400 hover:bg-slate-100">&times;</button>
+      </div>
+      <form action="/admin/users" method="POST" class="grid gap-4">
+        <label class="text-sm font-semibold">Full Name<input name="name" required class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none"></label>
+        <label class="text-sm font-semibold">Email<input name="email" type="email" required class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none"></label>
+        <label class="text-sm font-semibold">Password<input name="password" type="password" minlength="6" required class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none"></label>
+        <label class="text-sm font-semibold">Role
+          <select name="role" class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+            <option value="customer">Customer</option>
+            <option value="staff">Staff</option>
+            <option value="admin">Administrator</option>
+          </select>
+        </label>
+        <button class="rounded-xl p-3 font-semibold text-white hover:opacity-90" style="background:#C4136A;">Create user</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete User Modal -->
+  <div data-delete-user-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 p-4 opacity-0 transition-opacity duration-200" aria-hidden="true">
+    <div role="dialog" aria-modal="true" class="w-full max-w-md translate-y-4 rounded-3xl bg-white p-6 shadow-2xl transition-transform duration-200" data-delete-user-panel>
+      <div class="flex items-start gap-4">
+        <div class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-red-100 text-2xl text-red-600">!</div>
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">Delete user?</h2>
+          <p class="mt-1 text-sm leading-6 text-slate-500">This will permanently delete <strong data-delete-user-name class="text-slate-700"></strong>. This cannot be undone.</p>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-end gap-3">
+        <button type="button" data-close-user-delete class="rounded-xl border border-slate-200 px-4 py-2.5 font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
+        <form data-delete-user-form method="POST">
+          <button type="submit" class="rounded-xl bg-red-600 px-4 py-2.5 font-semibold text-white hover:bg-red-700">Delete user</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const closeUserModal = modal => {
+      modal.classList.remove("flex","opacity-100"); modal.classList.add("hidden");
+      modal.querySelector("[data-user-panel],[data-add-user-panel],[data-delete-user-panel]")?.classList.add("translate-y-4");
+    };
+    document.addEventListener("click", e => {
+      const add       = e.target.closest("[data-open-add-user]");
+      const close     = e.target.closest("[data-close-user-modal]");
+      const closeDel  = e.target.closest("[data-close-user-delete]");
+      const backdrop  = e.target.matches("[data-user-modal],[data-add-user-modal],[data-delete-user-modal]");
+      const edit      = e.target.closest("[data-open-edit-user]");
+      const del       = e.target.closest("[data-open-delete-user]");
+      if (add) {
+        const m = document.querySelector("[data-add-user-modal]");
+        m.classList.remove("hidden"); requestAnimationFrame(() => { m.classList.add("flex","opacity-100"); m.querySelector("[data-add-user-panel]").classList.remove("translate-y-4"); });
+      } else if (edit) {
+        const m = document.getElementById(`edit-user-modal-${edit.dataset.openEditUser}`);
+        m.classList.remove("hidden"); requestAnimationFrame(() => { m.classList.add("flex","opacity-100"); m.querySelector("[data-user-panel]").classList.remove("translate-y-4"); });
+      } else if (del) {
+        const m = document.querySelector("[data-delete-user-modal]");
+        m.querySelector("[data-delete-user-name]").textContent = del.dataset.userName;
+        m.querySelector("[data-delete-user-form]").action = `/admin/users/${del.dataset.openDeleteUser}/delete`;
+        m.classList.remove("hidden"); m.setAttribute("aria-hidden","false");
+        requestAnimationFrame(() => { m.classList.add("flex","opacity-100"); m.querySelector("[data-delete-user-panel]").classList.remove("translate-y-4"); });
+      } else if (close) {
+        closeUserModal(close.closest("[data-user-modal],[data-add-user-modal]"));
+      } else if (closeDel) {
+        const m = closeDel.closest("[data-delete-user-modal]"); closeUserModal(m); m.setAttribute("aria-hidden","true");
+      } else if (backdrop) {
+        closeUserModal(e.target);
+        if (e.target.matches("[data-delete-user-modal]")) e.target.setAttribute("aria-hidden","true");
+      }
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key !== "Escape") return;
+      document.querySelectorAll("[data-user-modal].flex,[data-add-user-modal].flex,[data-delete-user-modal].flex").forEach(m => { closeUserModal(m); if (m.matches("[data-delete-user-modal]")) m.setAttribute("aria-hidden","true"); });
+    });
+  </script>
+{{> footer}}

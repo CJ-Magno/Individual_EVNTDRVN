@@ -1,0 +1,30 @@
+<div id="edit-user-modal-{{id}}" data-user-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 p-4 opacity-0 transition-opacity duration-200">
+  <div class="w-full max-w-lg translate-y-4 rounded-3xl bg-white p-6 shadow-2xl transition-transform duration-200" data-user-panel>
+    <div class="mb-5 flex items-center justify-between">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-dali-600">Account Editor</p>
+        <h2 class="mt-1 text-xl font-bold">Edit User</h2>
+      </div>
+      <button type="button" data-close-user-modal class="rounded-full w-9 h-9 text-xl text-slate-400 hover:bg-slate-100">&times;</button>
+    </div>
+    <form action="/admin/users/{{id}}/update" method="POST" class="grid gap-4">
+      <label class="text-sm font-semibold">Name
+        <input name="name" value="{{name}}" required class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+      </label>
+      <label class="text-sm font-semibold">Email
+        <input name="email" type="email" value="{{email}}" required class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+      </label>
+      <label class="text-sm font-semibold">New Password <span class="font-normal text-slate-400">(optional)</span>
+        <input name="password" type="password" minlength="6" class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+      </label>
+      <label class="text-sm font-semibold">Role
+        <select name="role" class="mt-1 block w-full rounded-xl border border-slate-200 p-3 focus:border-dali-500 outline-none">
+          <option value="customer" {{#if (eq role 'customer')}}selected{{/if}}>Customer</option>
+          <option value="staff"    {{#if (eq role 'staff')}}selected{{/if}}>Staff</option>
+          <option value="admin"    {{#if (eq role 'admin')}}selected{{/if}}>Administrator</option>
+        </select>
+      </label>
+      <button class="rounded-xl bg-dali-600 p-3 font-semibold text-white hover:bg-dali-700">Save changes</button>
+    </form>
+  </div>
+</div>

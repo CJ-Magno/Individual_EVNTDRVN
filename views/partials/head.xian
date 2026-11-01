@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} | DALICheck</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dali: {
+              50:  '#FFF0F7',
+              100: '#FFD6EC',
+              200: '#FFB3D9',
+              300: '#FF80BF',
+              400: '#FF3DA3',
+              500: '#E0197A',
+              600: '#C4136A',
+              700: '#A30D58',
+              800: '#820845',
+              900: '#600434',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: Arial, sans-serif; color: #1f2937; }
+    @media (min-width: 1024px) { .page-body { overflow: hidden; } }
+
+    .sidebar-link {
+      display: flex; align-items: center; gap: .75rem;
+      border-radius: .75rem; padding: .75rem 1rem;
+      color: #fce7f3; font-size: .875rem; font-weight: 500;
+      transition: background-color .2s, color .2s, transform .15s;
+    }
+    .sidebar-link:hover { background: rgba(255,255,255,.12); color: #fff; transform: translateX(3px); }
+    .sidebar-link-active { background: #fff; color: #C4136A; font-weight: 700; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+
+    .status-good     { background: #dcfce7; color: #15803d; }
+    .status-warning  { background: #fef9c3; color: #854d0e; }
+    .status-expired  { background: #fee2e2; color: #b91c1c; }
+    .status-recalled { background: #f3e8ff; color: #7e22ce; }
+
+    .app-toast {
+      position: fixed; right: 1.5rem; top: 1.5rem; z-index: 100;
+      display: flex; gap: .75rem; align-items: center;
+      border-radius: 1rem; padding: 1rem 1.25rem; color: #fff;
+      box-shadow: 0 15px 35px rgba(0,0,0,.2);
+      animation: toast-in .25s ease-out, toast-out .35s ease-in 4.2s forwards;
+    }
+    .app-toast-success { background: #C4136A; }
+    .app-toast-error   { background: #dc2626; }
+    @keyframes toast-in  { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes toast-out { to   { opacity:0; transform:translateY(-12px); pointer-events:none; } }
+  </style>
+</head>

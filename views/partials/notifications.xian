@@ -1,0 +1,6 @@
+{{#if success_msg}}
+  <div class="app-toast app-toast-success" role="status">&#10003; <span>{{success_msg}}</span></div>
+{{/if}}
+{{#if error_msg}}
+  <div class="app-toast app-toast-error" role="alert">! <span>{{error_msg}}</span></div>
+{{/if}}

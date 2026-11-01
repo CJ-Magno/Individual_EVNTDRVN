@@ -1,0 +1,78 @@
+{{> head}}
+<body class="bg-slate-100 page-body">
+  <div class="min-h-screen lg:flex lg:h-screen">
+    {{> aside activeProducts=true isAdmin=isAdmin isStaff=isStaff userName=userName userRole=userRole}}
+    <main class="flex-1 overflow-y-auto p-6 lg:p-10">
+      {{> notifications}}
+      <div class="mx-auto max-w-6xl">
+        <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-widest text-dali-600">Catalog</p>
+            <h1 class="mt-2 text-4xl font-bold text-slate-900">All Products</h1>
+            <p class="mt-1 text-slate-500">Browse the product catalog and check expiration status.</p>
+          </div>
+          <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+            <span class="text-slate-400">&#128269;</span>
+            <input id="product-search" type="search" placeholder="Search product name..."
+              class="bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400 w-44">
+          </label>
+        </div>
+
+        <div id="product-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {{#each products}}
+            <article data-product-card data-product-name="{{name}}"
+              class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl">
+              {{#if image}}
+                <img src="{{image}}" alt="{{name}}" class="h-48 w-full object-cover">
+              {{else}}
+                <div class="h-48 w-full bg-dali-50 grid place-items-center text-dali-300 text-5xl">&#9634;</div>
+              {{/if}}
+              <div class="p-5">
+                <div class="flex items-start justify-between gap-2 mb-2">
+                  <h2 class="text-lg font-bold text-slate-900 leading-tight">{{name}}</h2>
+                  {{#if isRecalled}}
+                    <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-bold status-recalled">Recalled</span>
+                  {{else if isExpired}}
+                    <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-bold status-expired">Expired</span>
+                  {{else if isWarning}}
+                    <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-bold status-warning">Near Expiry</span>
+                  {{else}}
+                    <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-bold status-good">Good</span>
+                  {{/if}}
+                </div>
+                <p class="text-xs text-slate-500 mb-3">{{category}}{{#if supplier}} &bull; {{supplier}}{{/if}}</p>
+                <p class="text-sm text-slate-600 min-h-8">{{description}}</p>
+                <div class="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs text-slate-500">
+                  <div><span class="font-semibold text-slate-700">Price:</span> ₱{{price}}</div>
+                  <div><span class="font-semibold text-slate-700">Stock:</span> {{stock}}</div>
+                  <div><span class="font-semibold text-slate-700">Expires:</span> {{expirationDate}}</div>
+                  {{#if isExpired}}
+                    <div class="text-red-500 font-semibold">Expired {{daysLeft}}d ago</div>
+                  {{else}}
+                    <div class="{{#if isWarning}}text-amber-600{{else}}text-emerald-600{{/if}} font-semibold">{{daysLeft}}d remaining</div>
+                  {{/if}}
+                </div>
+              </div>
+            </article>
+          {{else}}
+            <p class="col-span-full py-12 text-center text-slate-400">No products available yet.</p>
+          {{/each}}
+        </div>
+        <p id="no-search-results" class="mt-6 hidden rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-400">
+          No products match your search.
+        </p>
+      </div>
+    </main>
+  </div>
+  <script>
+    const search = document.getElementById("product-search");
+    const cards  = [...document.querySelectorAll("[data-product-card]")];
+    const none   = document.getElementById("no-search-results");
+    search.addEventListener("input", () => {
+      const q = search.value.trim().toLowerCase();
+      let visible = 0;
+      cards.forEach(c => { const m = c.dataset.productName.toLowerCase().includes(q); c.classList.toggle("hidden", !m); if (m) visible++; });
+      none.classList.toggle("hidden", visible !== 0 || cards.length === 0);
+    });
+  </script>
+{{> footer}}

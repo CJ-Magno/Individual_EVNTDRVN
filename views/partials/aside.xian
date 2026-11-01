@@ -1,0 +1,91 @@
+<aside class="w-full shrink-0 lg:sticky lg:top-0 lg:h-screen lg:w-64 lg:overflow-hidden" style="background: linear-gradient(160deg, #C4136A 0%, #8a0d4a 100%);">
+  <div class="flex h-full flex-col p-5">
+    <a href="{{#if isAdmin}}/admin{{else}}/dashboard{{/if}}" class="flex items-center gap-3 mb-10">
+      <span class="grid h-11 w-11 place-items-center rounded-xl bg-white text-dali-600 font-black text-xl shadow-lg">D</span>
+      <div>
+        <div class="text-white font-bold text-lg leading-none">DALICheck</div>
+        <div class="text-dali-200 text-xs mt-0.5">Grocery Monitor</div>
+      </div>
+    </a>
+
+    <p class="mb-3 text-xs uppercase tracking-widest text-dali-200 font-semibold px-1">
+      {{#if isAdmin}}Administration{{else}}{{#if isStaff}}Staff Menu{{else}}Customer Menu{{/if}}{{/if}}
+    </p>
+
+    <nav class="space-y-1 flex-1">
+      {{#if isAdmin}}
+        <a href="/dashboard"   class="sidebar-link {{#if activeDashboard}}sidebar-link-active{{/if}}">
+          <span class="text-lg w-5 text-center">&#9783;</span><span>Dashboard</span>
+        </a>
+        <a href="/admin"       class="sidebar-link {{#if activeAdmin}}sidebar-link-active{{/if}}">
+          <span class="text-lg w-5 text-center">&#9783;</span><span>Products</span>
+        </a>
+        <a href="/monitor"     class="sidebar-link {{#if activeMonitor}}sidebar-link-active{{/if}}">
+          <span class="text-lg w-5 text-center">&#9888;</span><span>Expiry Monitor</span>
+        </a>
+        <a href="/admin/users" class="sidebar-link {{#if activeUsers}}sidebar-link-active{{/if}}">
+          <span class="text-lg w-5 text-center">&#9965;</span><span>Users</span>
+        </a>
+      {{else}}
+        <a href="/dashboard" class="sidebar-link {{#if activeDashboard}}sidebar-link-active{{/if}}">
+          <span class="text-lg w-5 text-center">&#9783;</span><span>Dashboard</span>
+        </a>
+        <a href="/products"  class="sidebar-link {{#if activeProducts}}sidebar-link-active{{/if}}">
+          <span class="text-lg w-5 text-center">&#9634;</span><span>Products</span>
+        </a>
+        <a href="/monitor"   class="sidebar-link {{#if activeMonitor}}sidebar-link-active{{/if}}">
+          <span class="text-lg w-5 text-center">&#9888;</span><span>Expiry Monitor</span>
+        </a>
+      {{/if}}
+    </nav>
+
+    <div class="mt-auto pt-4 border-t border-white border-opacity-20">
+      <div class="flex items-center gap-3 px-1 mb-3">
+        <span class="grid h-9 w-9 place-items-center rounded-full bg-white bg-opacity-20 text-white font-bold text-sm shrink-0">
+          {{#if userName}}{{userName.[0]}}{{else}}U{{/if}}
+        </span>
+        <div class="overflow-hidden">
+          <div class="text-white text-sm font-semibold truncate">{{userName}}</div>
+          <div class="text-dali-200 text-xs capitalize">{{userRole}}</div>
+        </div>
+      </div>
+      <button type="button" data-open-logout class="sidebar-link w-full text-left text-red-200 hover:bg-red-500 hover:bg-opacity-30 hover:text-white">
+        <span class="text-lg w-5 text-center">&#8617;</span><span>Log out</span>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- Logout modal -->
+<div data-logout-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 p-4 opacity-0 transition-opacity duration-200" aria-hidden="true">
+  <div role="dialog" aria-modal="true" aria-labelledby="logout-title"
+       class="w-full max-w-md translate-y-4 rounded-3xl bg-white p-6 shadow-2xl transition-transform duration-200" data-logout-panel>
+    <div class="flex items-start gap-4">
+      <div class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-dali-100 text-2xl text-dali-600">&#8617;</div>
+      <div>
+        <h2 id="logout-title" class="text-xl font-bold text-slate-900">Log out?</h2>
+        <p class="mt-1 text-sm leading-6 text-slate-500">Are you sure you want to end your current session?</p>
+      </div>
+    </div>
+    <div class="mt-6 flex justify-end gap-3">
+      <button type="button" data-close-logout class="rounded-xl border border-slate-200 px-4 py-2.5 font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
+      <form action="/logout" method="GET">
+        <button type="submit" class="rounded-xl bg-dali-600 px-4 py-2.5 font-semibold text-white hover:bg-dali-700">Log out</button>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  (() => {
+    const modal = document.querySelector("[data-logout-modal]");
+    const panel = modal?.querySelector("[data-logout-panel]");
+    if (!modal || !panel) return;
+    const close = () => { modal.classList.remove("flex","opacity-100"); modal.classList.add("hidden"); modal.setAttribute("aria-hidden","true"); panel.classList.add("translate-y-4"); };
+    const open  = () => { modal.classList.remove("hidden"); modal.classList.add("flex"); modal.setAttribute("aria-hidden","false"); requestAnimationFrame(() => { modal.classList.add("opacity-100"); panel.classList.remove("translate-y-4"); }); modal.querySelector("[data-close-logout]")?.focus(); };
+    document.addEventListener("click", e => {
+      if (e.target.closest("[data-open-logout]")) open();
+      else if (e.target.closest("[data-close-logout]") || e.target === modal) close();
+    });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && modal.getAttribute("aria-hidden") === "false") close(); });
+  })();
+</script>

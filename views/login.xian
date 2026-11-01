@@ -1,0 +1,68 @@
+{{> head}}
+<body style="margin:0; min-height:100vh; display:flex; background:#f9f0f5;">
+
+  <!-- Left art panel -->
+  <div style="width:46%; min-height:100vh; background:linear-gradient(155deg,#C4136A 0%,#7a0942 100%); display:flex; flex-direction:column; justify-content:space-between; padding:48px 6vw; position:relative; overflow:hidden;" class="hidden lg:flex flex-col">
+    <div style="position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(255,255,255,.06);right:-130px;top:-100px;"></div>
+    <div style="position:absolute;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.04);left:-80px;bottom:-60px;"></div>
+
+    <div class="flex items-center gap-3 relative z-10">
+      <div style="background:#fff;color:#C4136A;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;font-weight:900;box-shadow:0 4px 14px rgba(0,0,0,.2);">D</div>
+      <div>
+        <div style="color:#fff;font-size:22px;font-weight:800;line-height:1;">DALICheck</div>
+        <div style="color:rgba(255,255,255,.65);font-size:12px;">Everyday Grocery Monitor</div>
+      </div>
+    </div>
+
+    <div class="relative z-10">
+      <div style="font-size:11px;letter-spacing:2px;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;margin-bottom:16px;">Product Quality &amp; Expiration Monitoring</div>
+      <h1 style="font-size:48px;line-height:1.04;letter-spacing:-2.5px;color:#fff;font-weight:900;margin:0 0 20px;">Keep products <em style="color:#ffb3d9;font-style:normal;">fresh</em> &amp; <em style="color:#ffb3d9;font-style:normal;">safe.</em></h1>
+      <p style="color:rgba(255,255,255,.6);font-size:14px;line-height:1.7;max-width:320px;border-left:2px solid rgba(255,255,255,.25);padding-left:14px;">"Monitor expiration dates, track quality status, and keep your shelves compliant — all from one dashboard."</p>
+    </div>
+
+    <div style="display:flex;gap:20px;font-size:12px;color:rgba(255,255,255,.5);" class="relative z-10">
+      <span>&#10003; Expiry Alerts</span>
+      <span>&#10003; Quality Tracking</span>
+      <span>&#10003; Real-time Monitor</span>
+    </div>
+  </div>
+
+  <!-- Right form panel -->
+  <div style="flex:1;display:grid;place-items:center;padding:40px 32px;background:#fff;">
+    <div style="width:min(360px,100%);">
+      <div class="lg:hidden flex items-center gap-2 mb-8">
+        <div style="background:#C4136A;color:#fff;width:36px;height:36px;border-radius:9px;display:grid;place-items:center;font-weight:900;">D</div>
+        <span style="font-weight:800;font-size:18px;">DALICheck</span>
+      </div>
+
+      <p style="font-size:10px;letter-spacing:2px;font-weight:700;color:#C4136A;text-transform:uppercase;">Welcome back</p>
+      <h2 style="font-size:28px;letter-spacing:-1px;font-weight:800;margin:8px 0 4px;color:#0f172a;">Sign in</h2>
+      <p style="font-size:13px;color:#64748b;margin:0 0 28px;">Enter your credentials to access your account.</p>
+
+      <form method="POST" action="/login">
+        <div style="margin-bottom:16px;">
+          <label style="font-size:11px;font-weight:700;color:#475569;display:block;margin-bottom:7px;">Email address</label>
+          <input type="email" name="email" placeholder="you@dali.com" required
+            style="display:block;width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13px;outline:none;box-sizing:border-box;transition:border-color .2s;"
+            onfocus="this.style.borderColor='#C4136A'" onblur="this.style.borderColor='#e2e8f0'">
+        </div>
+        <div style="margin-bottom:8px;">
+          <label style="font-size:11px;font-weight:700;color:#475569;display:block;margin-bottom:7px;">Password</label>
+          <input type="password" name="password" placeholder="••••••••" required
+            style="display:block;width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13px;outline:none;box-sizing:border-box;transition:border-color .2s;"
+            onfocus="this.style.borderColor='#C4136A'" onblur="this.style.borderColor='#e2e8f0'">
+        </div>
+        <button type="submit"
+          style="width:100%;margin-top:16px;padding:13px 16px;border:0;border-radius:10px;cursor:pointer;background:#C4136A;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between;">
+          Sign in <span style="font-size:18px;">&#8594;</span>
+        </button>
+      </form>
+
+      <div style="display:flex;justify-content:space-between;margin-top:22px;font-size:12px;">
+        <a href="/forgot-password" style="color:#C4136A;font-weight:600;text-decoration:none;">Forgot password?</a>
+        <a href="/register"        style="color:#C4136A;font-weight:600;text-decoration:none;">Create an account</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

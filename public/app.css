@@ -1,0 +1,13 @@
+/* DALICheck – supplemental styles */
+:root {
+  --dali-pink:       #C4136A;
+  --dali-pink-hover: #A30D58;
+  --dali-pink-light: #FFF0F7;
+  --dali-pink-mid:   #FFD6EC;
+}
+
+/* status badge helpers (also referenced from head.xian) */
+.status-good     { background: #dcfce7; color: #15803d; border-radius: 9999px; padding: .2rem .7rem; font-size: .7rem; font-weight: 700; }
+.status-warning  { background: #fef9c3; color: #854d0e; border-radius: 9999px; padding: .2rem .7rem; font-size: .7rem; font-weight: 700; }
+.status-expired  { background: #fee2e2; color: #b91c1c; border-radius: 9999px; padding: .2rem .7rem; font-size: .7rem; font-weight: 700; }
+.status-recalled { background: #f3e8ff; color: #7e22ce; border-radius: 9999px; padding: .2rem .7rem; font-size: .7rem; font-weight: 700; }
